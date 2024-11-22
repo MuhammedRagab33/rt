@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Net Weight Scanner</title>
+  <link rel="style" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Net Weight Scanner</h1>
+    <video id="camera" autoplay playsinline></video>
+    <button id="captureButton">Capture and Scan</button>
+
+    <!-- عرض الوزن المؤقت -->
+    <div id="tempResultContainer">
+      <h3>Detected Net Weight:</h3>
+      <div id="detectedWeight">No weight detected yet</div>
+      <button id="saveButton" disabled>Save to Draft</button>
+    </div>
+
+    <!-- المسودة -->
+    <div id="resultContainer">
+      <h3>Scanned Weights (Draft):</h3>
+      <textarea id="results" readonly></textarea>
+      <button id="copyButton">Copy All</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
