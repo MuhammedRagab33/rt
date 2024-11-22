@@ -1,13 +1,18 @@
-// فتح الكاميرا
+// اختيار عناصر HTML
 const video = document.getElementById("camera");
-const canvas = document.getElementById("canvas");
 const captureButton = document.getElementById("captureButton");
 const detectedWeightContainer = document.getElementById("detectedWeight");
 const saveButton = document.getElementById("saveButton");
 const resultsArea = document.getElementById("results");
+const copyButton = document.getElementById("copyButton");
 
-// الوصول إلى الكاميرا
-navigator.mediaDevices.getUserMedia({ video: true })
+// تشغيل الكاميرا الخلفية
+navigator.mediaDevices
+  .getUserMedia({
+    video: {
+      facingMode: { exact: "environment" }, // استخدام الكاميرا الخلفية
+    },
+  })
   .then((stream) => {
     video.srcObject = stream;
   })
@@ -18,15 +23,17 @@ navigator.mediaDevices.getUserMedia({ video: true })
 
 // التقاط الصورة وتحليل الوزن الصافي
 captureButton.addEventListener("click", () => {
+  const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
+
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-  // اقتصاص منطقة الوزن الصافي
+  // اقتصاص المنطقة المحتملة للوزن الصافي (يمكن تعديل الإحداثيات حسب الصورة)
   const netWeightRegion = {
-    x: canvas.width * 0.6, // تعديل حسب موقع الوزن
-    y: canvas.height * 0.75, // تعديل حسب موقع الوزن
+    x: canvas.width * 0.6, // نسبة العرض
+    y: canvas.height * 0.75, // نسبة الطول
     width: canvas.width * 0.35,
     height: canvas.height * 0.1,
   };
@@ -34,8 +41,8 @@ captureButton.addEventListener("click", () => {
   const croppedCanvas = document.createElement("canvas");
   croppedCanvas.width = netWeightRegion.width;
   croppedCanvas.height = netWeightRegion.height;
-  const croppedContext = croppedCanvas.getContext("2d");
 
+  const croppedContext = croppedCanvas.getContext("2d");
   croppedContext.drawImage(
     canvas,
     netWeightRegion.x,
@@ -48,20 +55,21 @@ captureButton.addEventListener("click", () => {
     netWeightRegion.height
   );
 
-  // تحليل النص باستخدام Tesseract.js
+  // استخدام Tesseract.js للتعرف على النص
   Tesseract.recognize(
     croppedCanvas.toDataURL("image/png"),
-    'eng', // اللغة
+    "eng", // اللغة الإنجليزية
     {
-      logger: info => console.log(info), // لتتبع العملية (اختياري)
+      logger: (info) => console.log(info), // لمتابعة عملية التحليل
     }
   ).then(({ data: { text } }) => {
+    // استخراج الوزن الصافي باستخدام Regex
     const match = text.match(/([\d.]+)\s*Kg/i);
     if (match) {
       const netWeight = match[1];
       detectedWeightContainer.textContent = `Net Weight: ${netWeight} Kg`;
       saveButton.disabled = false;
-      saveButton.setAttribute("data-weight", netWeight); // تخزين الوزن موقتًا في الزر
+      saveButton.setAttribute("data-weight", netWeight); // تخزين الوزن مؤقتًا
     } else {
       detectedWeightContainer.textContent = "No weight detected.";
       saveButton.disabled = true;
@@ -74,14 +82,14 @@ saveButton.addEventListener("click", () => {
   const weight = saveButton.getAttribute("data-weight");
   if (weight) {
     resultsArea.value += `Net Weight: ${weight} Kg\n`;
-    detectedWeightContainer.textContent = "No weight detected yet";
+    detectedWeightContainer.textContent = "No weight detected yet.";
     saveButton.disabled = true;
   }
 });
 
-// نسخ النصوص إلى الحافظة
-document.getElementById("copyButton").addEventListener("click", () => {
+// نسخ جميع الأوزان إلى الحافظة
+copyButton.addEventListener("click", () => {
   resultsArea.select();
   document.execCommand("copy");
-  alert("Copied to clipboard!");
+  alert("All weights copied to clipboard!");
 });
