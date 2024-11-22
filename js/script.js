@@ -7,22 +7,29 @@ const resultsArea = document.getElementById("results");
 const copyButton = document.getElementById("copyButton");
 
 // تشغيل الكاميرا الخلفية
-navigator.mediaDevices
-  .getUserMedia({
-    video: {
-      facingMode: { ideal: "environment" }, // طلب الكاميرا الخلفية
-    },
-  })
-  .then((stream) => {
-    video.srcObject = stream;
-    console.log("Camera is active!");
-  })
-  .catch((error) => {
-    console.error("Camera access error:", error);
-    alert(
-      "Could not access the camera. Please check your permissions or try using HTTPS."
-    );
-  });
+function initializeCamera() {
+  navigator.mediaDevices
+    .getUserMedia({
+      video: {
+        facingMode: { ideal: "environment" }, // طلب الكاميرا الخلفية
+      },
+    })
+    .then((stream) => {
+      video.srcObject = stream;
+      console.log("Camera is active!");
+    })
+    .catch((error) => {
+      console.error("Camera access error:", error);
+      if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+        alert("No camera found on your device. Please check your device's camera.");
+      } else {
+        alert("Could not access the camera. Please ensure the camera is not in use by another app.");
+      }
+    });
+}
+
+// محاولة الاتصال بالكاميرا عند تحميل الصفحة
+document.addEventListener("DOMContentLoaded", initializeCamera);
 
 // التقاط الصورة وتحليل الوزن الصافي
 captureButton.addEventListener("click", () => {
