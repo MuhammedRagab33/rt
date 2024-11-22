@@ -18,12 +18,21 @@ h1 {
   margin-bottom: 20px;
 }
 
+.video-container {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
 video {
   width: 100%;
   height: auto;
   border: 2px solid #ccc;
   border-radius: 8px;
-  margin-bottom: 10px;
+}
+
+.action-buttons {
+  margin-top: 10px;
 }
 
 button {
@@ -55,4 +64,17 @@ textarea {
   padding: 10px;
   font-size: 14px;
   resize: none;
+}
+
+#detectedWeight {
+  font-size: 20px;
+  color: #333;
+}
+
+#copyButton {
+  background-color: #007bff;
+}
+
+#copyButton:active {
+  background-color: #0056b3;
 }

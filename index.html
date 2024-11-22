@@ -10,10 +10,15 @@
   <div class="container">
     <h1>Net Weight Scanner</h1>
     <!-- عرض الكاميرا -->
-    <video id="camera" autoplay playsinline></video>
-    <button id="captureButton">Capture and Scan</button>
+    <div class="video-container">
+      <video id="camera" autoplay playsinline></video>
+    </div>
 
-    <!-- عرض الوزن المؤقت -->
+    <div class="action-buttons">
+      <button id="captureButton">Capture and Scan</button>
+    </div>
+
+    <!-- عرض الوزن المكتشف -->
     <div id="tempResultContainer">
       <h3>Detected Net Weight:</h3>
       <div id="detectedWeight">No weight detected yet</div>

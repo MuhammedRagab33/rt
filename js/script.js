@@ -10,15 +10,18 @@ const copyButton = document.getElementById("copyButton");
 navigator.mediaDevices
   .getUserMedia({
     video: {
-      facingMode: { exact: "environment" }, // استخدام الكاميرا الخلفية
+      facingMode: { ideal: "environment" }, // طلب الكاميرا الخلفية
     },
   })
   .then((stream) => {
     video.srcObject = stream;
+    console.log("Camera is active!");
   })
   .catch((error) => {
-    console.error("Error accessing camera:", error);
-    alert("Could not access the camera. Please check your device permissions.");
+    console.error("Camera access error:", error);
+    alert(
+      "Could not access the camera. Please check your permissions or try using HTTPS."
+    );
   });
 
 // التقاط الصورة وتحليل الوزن الصافي
@@ -30,7 +33,7 @@ captureButton.addEventListener("click", () => {
   canvas.height = video.videoHeight;
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-  // اقتصاص المنطقة المحتملة للوزن الصافي (يمكن تعديل الإحداثيات حسب الصورة)
+  // اقتصاص المنطقة المحتملة للوزن الصافي (يمكن تعديل الإحداثيات)
   const netWeightRegion = {
     x: canvas.width * 0.6, // نسبة العرض
     y: canvas.height * 0.75, // نسبة الطول
